@@ -1,0 +1,208 @@
+# OS setup
+!cat /etc/os-release
+!apt-get install -qq bc tree sox
+
+# espnet setup
+!git clone --depth 5 https://github.com/espnet/espnet
+!pip install -q torch==1.1
+!cd espnet; pip install -q -e .
+
+# download pre-compiled warp-ctc and kaldi tools
+!espnet/utils/download_from_google_drive.sh \
+    "https://drive.google.com/open?id=13Y4tSygc8WtqzvAVGK_vRV9GlV7TRC0w" espnet/tools tar.gz > /dev/null
+!cd espnet/tools/warp-ctc/pytorch_binding && \
+    pip install -U dist/warpctc_pytorch-0.1.1-cp36-cp36m-linux_x86_64.whl
+
+# make dummy activate
+!mkdir -p espnet/tools/venv/bin && touch espnet/tools/venv/bin/activate
+!echo "setup done."
+
+# move on the recipe directory
+import os
+os.chdir("espnet/egs/an4/tts1")
+
+# check files
+!tree -L 1
+
+#Download data
+# run stage -1 and then stop
+!./run.sh --stage -1 --stop_stage -1
+
+!tree -L 2 downloads
+
+#data preparation
+# run stage 0 and then stop
+!./run.sh --stage 0 --stop_stage 0
+
+!tree -L 2 data
+
+!head -n 3 data/train/*
+
+#feaature extraction
+# run stage 1 with default settings
+!./run.sh --stage 1 --stop_stage 1 --nj 4
+!tree -L 2 fbank
+
+import kaldiio
+import matplotlib.pyplot as plt
+
+# load scp file
+scp_dict = kaldiio.load_scp("fbank/raw_fbank_train.1.scp")
+for key in scp_dict:
+    plt.imshow(scp_dict[key].T[::-1])
+    plt.title(key)
+    plt.colorbar()
+    plt.show()
+    break
+    
+# load ark file
+ark_generator = kaldiio.load_ark("fbank/raw_fbank_train.1.ark")
+for key, array in ark_generator:
+    plt.imshow(array.T[::-1])
+    plt.title(key)
+    plt.colorbar()
+    plt.show()
+    break
+
+#dictonary and json preparation
+# run stage 2 and then stop
+!./run.sh --stage 2 --stop_stage 2
+
+
+#network training
+#trains E2E-TTS network
+# load configuration yaml
+import yaml
+with open("conf/train_pytorch_tacotron2.yaml") as f:
+    params = yaml.load(f, Loader=yaml.Loader)
+
+# change hyperparameters by yourself!
+params.update({
+    "embed-dim": 16,
+    "elayers": 1, 
+    "eunits": 16,
+    "econv-layers": 1,
+    "econv-chans": 16,
+    "econv-filts": 5,
+    "dlayers": 1,
+    "dunits": 16,
+    "prenet-layers": 1,
+    "prenet-units": 16,
+    "postnet-layers": 1,
+    "postnet-chans": 16,
+    "postnet-filts": 5,
+    "adim": 16,
+    "aconv-chans": 16,
+    "aconv-filts": 5,
+    "reduction-factor": 5,
+    "batch-size": 128,
+    "epochs": 5,
+    "report-interval-iters": 10,
+})
+
+# save
+with open("conf/train_pytorch_tacotron2_mini.yaml", "w") as f:
+    yaml.dump(params, f, Dumper=yaml.Dumper)
+
+# check modified version
+!cat conf/train_pytorch_tacotron2_mini.yaml
+
+
+# use modified configuration file as train config
+!./run.sh --stage 3 --stop_stage 3 --train_config conf/train_pytorch_tacotron2_mini.yaml --verbose 1
+
+#Network decoding
+# load configuration yaml
+import yaml
+with open("conf/decode.yaml") as f:
+    params = yaml.load(f, Loader=yaml.Loader)
+
+# change hyperparameters by yourself!
+params.update({
+    "maxlenratio": 1.0,
+})
+
+# save
+with open("conf/decode_mini.yaml", "w") as f:
+    yaml.dump(params, f, Dumper=yaml.Dumper)
+
+# check modified version
+!cat conf/decode_mini.yaml
+
+# run stage 4 and then stop
+!./run.sh --stage 4 --stop_stage 4 --nj 2 --verbose 1 \
+    --train_config conf/train_pytorch_tacotron2_mini.yaml \
+    --decode_config conf/decode_mini.yaml
+
+#waveform Synthesis ( synthesizes waveform with Griffin-Lim.)
+# run stage 5 and then stop
+!./run.sh --stage 5 --stop_stage 5 --nj 2 \
+    --train_config conf/train_pytorch_tacotron2_mini.yaml \
+    --decode_config conf/decode_mini.yaml \
+    --griffin_lim_iters 4
+
+#generate your own text with pretrained models!
+!rm -rf decode/example
+print("Please input your favorite sentence!")
+text = input()
+text = text.upper()
+with open("example.txt", "w") as f:
+    f.write(text + "\n")
+
+# you can change here to select the pretrained model
+!../../../utils/synth_wav.sh --stop_stage 3 --models ljspeech.fastspeech.v1 example.txt
+# !../../../utils/synth_wav.sh --stop_stage 3 --models ljspeech.tacotron2.v3 example.txt
+# !../../../utils/synth_wav.sh --stop_stage 3 --models ljspeech.transformer.v1 example.txt
+
+# check generated audio
+from IPython.display import display, Audio, Image, display_png
+display(Audio("decode/example/wav/example_1.wav"))
+!sox decode/example/wav/example_1.wav -n rate 22050 spectrogram
+display_png(Image("spectrogram.png", width=750))
+
+# check attention and probs
+if os.path.exists("decode/example/outputs/att_ws/example_1_att_ws.png"):
+    display_png(Image("decode/example/outputs/att_ws/example_1_att_ws.png", width=1000))
+    display_png(Image("decode/example/outputs/probs/example_1_prob.png", width=500))
+
+
+#neural vocoder
+# generate your sentence!
+!rm -rf decode/example_short
+print("Please input your favorite sentence!")
+text = input()
+text = text.upper()
+with open("example_short.txt", "w") as f:
+    f.write(text + "\n")
+    
+# extend stop_stage
+!../../../utils/synth_wav.sh --stop_stage 4 --models ljspeech.tacotron2.v3 example_short.txt
+
+# check generated audio
+display(Audio("decode/example_short/wav/example_short_1.wav"))
+display(Audio("decode/example_short/wav_wnv/example_short_1_gen.wav"))
+
+#Demonstration of the use of ASR pretrained models
+!../../../utils/recog_wav.sh --help
+# downsample to 16 kHz for ASR model
+!sox decode/example/wav/example_1.wav -b 16 decode/example/wav/example_1_16k.wav rate 16k pad 0.1 pad 0 0.1
+
+# make decode config
+import yaml
+with open("conf/decode_sample.yaml", "w") as f:
+    yaml.dump({
+        "batchsize": 0,
+        "beam-size": 5,
+        "ctc-weight": 0.4,
+        "lm-weight": 0.6,
+        "maxlenratio": 0.0,
+        "minlenratio": 0.0,
+        "penalty": 0.0,
+    }, f, Dumper=yaml.Dumper)
+
+# let's recognize generated speech
+!../../../utils/recog_wav.sh --models librispeech.transformer.v1 \
+    --decode_config conf/decode_sample.yaml \
+    decode/example/wav/example_1_16k.wav
+
+

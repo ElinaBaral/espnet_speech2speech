@@ -1,0 +1,363 @@
+
+├── asr
+│   ├── asr_mix_utils.py
+│   ├── asr_utils.py
+│   ├── chainer_backend
+│   │   ├── asr.py
+│   │   └── __init__.py
+│   ├── __init__.py
+│   ├── __pycache__
+│   │   ├── asr_utils.cpython-36.pyc
+│   │   └── __init__.cpython-36.pyc
+│   └── pytorch_backend
+│       ├── asr_init.py
+│       ├── asr_mix.py
+│       ├── asr.py
+│       ├── __init__.py
+│       ├── __pycache__
+│       │   ├── asr.cpython-36.pyc
+│       │   ├── asr_init.cpython-36.pyc
+│       │   └── __init__.cpython-36.pyc
+│       └── recog.py
+├── bin
+│   ├── asr_enhance.py
+│   ├── asr_recog.py
+│   ├── asr_train.py
+│   ├── __init__.py
+│   ├── lm_train.py
+│   ├── mt_train.py
+│   ├── mt_trans.py
+│   ├── __pycache__
+│   │   ├── asr_train.cpython-36.pyc
+│   │   └── __init__.cpython-36.pyc
+│   ├── ~s2s_decode.py
+│   ├── s2s_decode.py
+│   ├── ~s2s_train.py
+│   ├── s2s_train.py
+│   ├── st_train.py
+│   ├── st_trans.py
+│   ├── tts_decode.py
+│   └── tts_train.py
+├── files.txt
+├── __init__.py
+├── lm
+│   ├── chainer_backend
+│   │   ├── extlm.py
+│   │   ├── __init__.py
+│   │   └── lm.py
+│   ├── __init__.py
+│   ├── lm_utils.py
+│   ├── __pycache__
+│   │   ├── __init__.cpython-36.pyc
+│   │   └── lm_utils.cpython-36.pyc
+│   └── pytorch_backend
+│       ├── extlm.py
+│       ├── __init__.py
+│       ├── lm.py
+│       └── __pycache__
+│           ├── extlm.cpython-36.pyc
+│           ├── __init__.cpython-36.pyc
+│           └── lm.cpython-36.pyc
+├── mt
+│   ├── __init__.py
+│   ├── mt_utils.py
+│   ├── __pycache__
+│   │   └── __init__.cpython-36.pyc
+│   └── pytorch_backend
+│       ├── __init__.py
+│       ├── mt.py
+│       └── __pycache__
+│           ├── __init__.cpython-36.pyc
+│           └── mt.cpython-36.pyc
+├── nets
+│   ├── asr_interface.py
+│   ├── batch_beam_search.py
+│   ├── beam_search.py
+│   ├── chainer_backend
+│   │   ├── asr_interface.py
+│   │   ├── ctc.py
+│   │   ├── deterministic_embed_id.py
+│   │   ├── e2e_asr.py
+│   │   ├── e2e_asr_transformer.py
+│   │   ├── __init__.py
+│   │   ├── nets_utils.py
+│   │   ├── rnn
+│   │   │   ├── attentions.py
+│   │   │   ├── decoders.py
+│   │   │   ├── encoders.py
+│   │   │   ├── __init__.py
+│   │   │   └── training.py
+│   │   └── transformer
+│   │       ├── attention.py
+│   │       ├── ctc.py
+│   │       ├── decoder_layer.py
+│   │       ├── decoder.py
+│   │       ├── embedding.py
+│   │       ├── encoder_layer.py
+│   │       ├── encoder.py
+│   │       ├── __init__.py
+│   │       ├── label_smoothing_loss.py
+│   │       ├── layer_norm.py
+│   │       ├── mask.py
+│   │       ├── plot.py
+│   │       ├── positionwise_feed_forward.py
+│   │       ├── subsampling.py
+│   │       └── training.py
+│   ├── ctc_prefix_score.py
+│   ├── e2e_asr_common.py
+│   ├── e2e_mt_common.py
+│   ├── __init__.py
+│   ├── lm_interface.py
+│   ├── mt_interface.py
+│   ├── __pycache__
+│   │   ├── asr_interface.cpython-36.pyc
+│   │   ├── ctc_prefix_score.cpython-36.pyc
+│   │   ├── e2e_asr_common.cpython-36.pyc
+│   │   ├── __init__.cpython-36.pyc
+│   │   ├── lm_interface.cpython-36.pyc
+│   │   ├── mt_interface.cpython-36.pyc
+│   │   ├── scorer_interface.cpython-36.pyc
+│   │   └── tts_interface.cpython-36.pyc
+│   ├── pytorch_backend
+│   │   ├── ctc.py
+│   │   ├── e2e_asr_mix.py
+│   │   ├── e2e_asr_mulenc.py
+│   │   ├── e2e_asr.py
+│   │   ├── e2e_asr_transducer.py
+│   │   ├── e2e_asr_transformer.py
+│   │   ├── e2e_mt.py
+│   │   ├── e2e_mt_transformer.py
+│   │   ├── ~e2e_s2s_transformer.py
+│   │   ├── e2e_s2s_transformer.py
+│   │   ├── e2e_st.py
+│   │   ├── e2e_st_transformer.py
+│   │   ├── e2e_tts_fastspeech.py
+│   │   ├── e2e_tts_tacotron2.py
+│   │   ├── e2e_tts_transformer.py
+│   │   ├── fastspeech
+│   │   │   ├── duration_calculator.py
+│   │   │   ├── duration_predictor.py
+│   │   │   ├── __init__.py
+│   │   │   └── length_regulator.py
+│   │   ├── frontends
+│   │   │   ├── beamformer.py
+│   │   │   ├── dnn_beamformer.py
+│   │   │   ├── dnn_wpe.py
+│   │   │   ├── feature_transform.py
+│   │   │   ├── frontend.py
+│   │   │   ├── __init__.py
+│   │   │   ├── mask_estimator.py
+│   │   │   └── __pycache__
+│   │   │       ├── beamformer.cpython-36.pyc
+│   │   │       ├── dnn_beamformer.cpython-36.pyc
+│   │   │       ├── dnn_wpe.cpython-36.pyc
+│   │   │       ├── feature_transform.cpython-36.pyc
+│   │   │       ├── frontend.cpython-36.pyc
+│   │   │       ├── __init__.cpython-36.pyc
+│   │   │       └── mask_estimator.cpython-36.pyc
+│   │   ├── initialization.py
+│   │   ├── __init__.py
+│   │   ├── lm
+│   │   │   ├── default.py
+│   │   │   ├── __init__.py
+│   │   │   ├── __pycache__
+│   │   │   │   ├── default.cpython-36.pyc
+│   │   │   │   └── __init__.cpython-36.pyc
+│   │   │   ├── seq_rnn.py
+│   │   │   └── transformer.py
+│   │   ├── nets_utils.py
+│   │   ├── __pycache__
+│   │   │   ├── ctc.cpython-36.pyc
+│   │   │   ├── e2e_asr.cpython-36.pyc
+│   │   │   ├── e2e_mt.cpython-36.pyc
+│   │   │   ├── e2e_s2s_transformer.cpython-36.pyc
+│   │   │   ├── e2e_tts_tacotron2.cpython-36.pyc
+│   │   │   ├── __init__.cpython-36.pyc
+│   │   │   ├── initialization.cpython-36.pyc
+│   │   │   └── nets_utils.cpython-36.pyc
+│   │   ├── rnn
+│   │   │   ├── attentions.py
+│   │   │   ├── decoders.py
+│   │   │   ├── encoders.py
+│   │   │   ├── __init__.py
+│   │   │   └── __pycache__
+│   │   │       ├── attentions.cpython-36.pyc
+│   │   │       ├── decoders.cpython-36.pyc
+│   │   │       ├── encoders.cpython-36.pyc
+│   │   │       └── __init__.cpython-36.pyc
+│   │   ├── streaming
+│   │   │   ├── __init__.py
+│   │   │   ├── __pycache__
+│   │   │   │   ├── __init__.cpython-36.pyc
+│   │   │   │   ├── segment.cpython-36.pyc
+│   │   │   │   └── window.cpython-36.pyc
+│   │   │   ├── segment.py
+│   │   │   └── window.py
+│   │   ├── tacotron2
+│   │   │   ├── cbhg.py
+│   │   │   ├── decoder.py
+│   │   │   ├── encoder.py
+│   │   │   ├── __init__.py
+│   │   │   └── __pycache__
+│   │   │       ├── cbhg.cpython-36.pyc
+│   │   │       ├── decoder.cpython-36.pyc
+│   │   │       ├── encoder.cpython-36.pyc
+│   │   │       └── __init__.cpython-36.pyc
+│   │   ├── transducer
+│   │   │   ├── initializer.py
+│   │   │   ├── __init__.py
+│   │   │   ├── loss.py
+│   │   │   ├── __pycache__
+│   │   │   │   ├── __init__.cpython-36.pyc
+│   │   │   │   └── vgg.cpython-36.pyc
+│   │   │   ├── rnn_decoders.py
+│   │   │   ├── transformer_decoder_layer.py
+│   │   │   ├── transformer_decoder.py
+│   │   │   ├── utils.py
+│   │   │   └── vgg.py
+│   │   ├── transformer
+│   │   │   ├── add_sos_eos.py
+│   │   │   ├── attention.py
+│   │   │   ├── decoder_layer.py
+│   │   │   ├── decoder.py
+│   │   │   ├── embedding.py
+│   │   │   ├── encoder_layer.py
+│   │   │   ├── encoder.py
+│   │   │   ├── initializer.py
+│   │   │   ├── __init__.py
+│   │   │   ├── label_smoothing_loss.py
+│   │   │   ├── layer_norm.py
+│   │   │   ├── mask.py
+│   │   │   ├── multi_layer_conv.py
+│   │   │   ├── optimizer.py
+│   │   │   ├── plot.py
+│   │   │   ├── positionwise_feed_forward.py
+│   │   │   ├── __pycache__
+│   │   │   │   ├── attention.cpython-36.pyc
+│   │   │   │   ├── decoder.cpython-36.pyc
+│   │   │   │   ├── decoder_layer.cpython-36.pyc
+│   │   │   │   ├── embedding.cpython-36.pyc
+│   │   │   │   ├── encoder.cpython-36.pyc
+│   │   │   │   ├── encoder_layer.cpython-36.pyc
+│   │   │   │   ├── __init__.cpython-36.pyc
+│   │   │   │   ├── initializer.cpython-36.pyc
+│   │   │   │   ├── layer_norm.cpython-36.pyc
+│   │   │   │   ├── mask.cpython-36.pyc
+│   │   │   │   ├── multi_layer_conv.cpython-36.pyc
+│   │   │   │   ├── optimizer.cpython-36.pyc
+│   │   │   │   ├── plot.cpython-36.pyc
+│   │   │   │   ├── positionwise_feed_forward.cpython-36.pyc
+│   │   │   │   ├── repeat.cpython-36.pyc
+│   │   │   │   └── subsampling.cpython-36.pyc
+│   │   │   ├── repeat.py
+│   │   │   └── subsampling.py
+│   │   └── wavenet.py
+│   ├── s2s_interface.py
+│   ├── scorer_interface.py
+│   ├── scorers
+│   │   ├── ctc.py
+│   │   ├── __init__.py
+│   │   ├── length_bonus.py
+│   │   └── __pycache__
+│   │       ├── ctc.cpython-36.pyc
+│   │       └── __init__.cpython-36.pyc
+│   ├── st_interface.py
+│   └── tts_interface.py
+├── optimizer
+│   ├── chainer.py
+│   ├── factory.py
+│   ├── __init__.py
+│   ├── parser.py
+│   ├── __pycache__
+│   │   ├── factory.cpython-36.pyc
+│   │   └── __init__.cpython-36.pyc
+│   └── pytorch.py
+├── __pycache__
+│   └── __init__.cpython-36.pyc
+├── s2s
+│   ├── __init__.py
+│   ├── __pycache__
+│   │   └── __init__.cpython-36.pyc
+│   └── pytorch_backend
+│       ├── __init__.py
+│       ├── __pycache__
+│       │   ├── __init__.cpython-36.pyc
+│       │   ├── s2s.cpython-36.pyc
+│       │   └── tts.cpython-36.pyc
+│       └── s2s.py
+├── scheduler
+│   ├── chainer.py
+│   ├── __init__.py
+│   ├── __pycache__
+│   │   ├── __init__.cpython-36.pyc
+│   │   ├── pytorch.cpython-36.pyc
+│   │   └── scheduler.cpython-36.pyc
+│   ├── pytorch.py
+│   └── scheduler.py
+├── st
+│   ├── __init__.py
+│   └── pytorch_backend
+│       ├── __init__.py
+│       └── st.py
+├── transform
+│   ├── add_deltas.py
+│   ├── channel_selector.py
+│   ├── cmvn.py
+│   ├── functional.py
+│   ├── __init__.py
+│   ├── perturb.py
+│   ├── __pycache__
+│   │   ├── __init__.cpython-36.pyc
+│   │   ├── spectrogram.cpython-36.pyc
+│   │   └── transformation.cpython-36.pyc
+│   ├── spec_augment.py
+│   ├── spectrogram.py
+│   ├── transformation.py
+│   ├── transform_interface.py
+│   └── wpe.py
+├── tts
+│   ├── __init__.py
+│   ├── __pycache__
+│   │   └── __init__.cpython-36.pyc
+│   └── pytorch_backend
+│       ├── __init__.py
+│       ├── __pycache__
+│       │   ├── __init__.cpython-36.pyc
+│       │   └── tts.cpython-36.pyc
+│       └── tts.py
+└── utils
+    ├── check_kwargs.py
+    ├── cli_readers.py
+    ├── cli_utils.py
+    ├── cli_writers.py
+    ├── dataset.py
+    ├── deterministic_utils.py
+    ├── dynamic_import.py
+    ├── fill_missing_args.py
+    ├── __init__.py
+    ├── io_utils.py
+    ├── __pycache__
+    │   ├── cli_readers.cpython-36.pyc
+    │   ├── cli_utils.cpython-36.pyc
+    │   ├── cli_writers.cpython-36.pyc
+    │   ├── dataset.cpython-36.pyc
+    │   ├── deterministic_utils.cpython-36.pyc
+    │   ├── dynamic_import.cpython-36.pyc
+    │   ├── fill_missing_args.cpython-36.pyc
+    │   ├── __init__.cpython-36.pyc
+    │   └── io_utils.cpython-36.pyc
+    ├── spec_augment.py
+    └── training
+        ├── batchfy.py
+        ├── evaluator.py
+        ├── __init__.py
+        ├── iterators.py
+        ├── __pycache__
+        │   ├── batchfy.cpython-36.pyc
+        │   ├── evaluator.cpython-36.pyc
+        │   ├── __init__.cpython-36.pyc
+        │   ├── iterators.cpython-36.pyc
+        │   ├── tensorboard_logger.cpython-36.pyc
+        │   └── train_utils.cpython-36.pyc
+        ├── tensorboard_logger.py
+        └── train_utils.py

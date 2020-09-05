@@ -1,0 +1,81 @@
+language: python
+
+cache:
+  - pip
+  - ccache
+
+matrix:
+  include:
+    - os: linux
+      python: "2.7"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env:
+        - TH_VERSION="0.4.1"
+        - CC="gcc-7"
+        - CXX="g++-7"
+    - os: linux
+      python: "3.6"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env:
+        - TH_VERSION="0.4.1"
+        - CC="gcc-7"
+        - CXX="g++-7"
+
+install:
+  - pip install -U pip wheel
+  - pip install -r ./tools/test_requirements.txt
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+          pip install http://download.pytorch.org/whl/cpu/torch-${TH_VERSION}-cp27-cp27mu-linux_x86_64.whl ;
+    else
+          pip3 install http://download.pytorch.org/whl/cpu/torch-${TH_VERSION}-cp36-cp36m-linux_x86_64.whl ;
+    fi
+  # install matplotlib
+  - pip install matplotlib
+  # install warp-ctc (use @jnishi patched version)
+  - git clone https://github.com/jnishi/warp-ctc.git
+  - cd warp-ctc && mkdir build && cd build && cmake .. && make -j4 && cd ..
+  - pip install cffi
+  - cd pytorch_binding && python setup.py install && cd ../.. # maybe need to: apt-get install python-dev
+  # install chainer
+  - grep -v cupy tools/requirements.txt | pip install -r /dev/stdin
+  - cd tools && make kaldi-io-for-python && cd -
+  # install doc deps
+  - pip install -r doc/requirements.txt
+  # install chainer_ctc
+  - pip install cython
+  - git clone https://github.com/jheymann85/chainer_ctc.git
+  - cd chainer_ctc && chmod +x install_warp-ctc.sh && ./install_warp-ctc.sh
+  - pip install . && cd ..
+  - export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:`pwd`/chainer_ctc/ext/warp-ctc/build
+
+
+script:
+  # TODO test coding style?
+  - flake8 src test
+  - autopep8 -r src test --exclude src/utils --global-config .pep8 --diff --max-line-length 120 | tee check_autopep8
+  - test ! -s check_autopep8
+  - pytest
+  - travis-sphinx build --source=doc --nowarn
+
+sudo: false
+
+
+after_success:
+    - travis-sphinx deploy
+
+addons:
+  apt:
+    packages:
+      - cmake
+      - python-dev
+      - python3-dev
